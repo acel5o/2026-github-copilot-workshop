@@ -1,6 +1,7 @@
 import { describe, test, expect, jest } from '@jest/globals';
 import {
   listRequisitions,
+  getRequisitionById,
   getRequisitionOpenLines,
 } from '../../src/services/requisition-service.js';
 
@@ -109,5 +110,97 @@ describe('requisition-service list functions', () => {
     expect(result.openLines).toHaveLength(1);
     expect(result.openLines[0].id).toBe('l-1');
     expect(result.openLines[0].qtyOpenForPo).toBe(3);
+  });
+});
+
+describe('getRequisitionById', () => {
+  test('returns null when requisition not found', async () => {
+    const db = mockDb(() => ({ rows: [], rowCount: 0 }));
+
+    const result = await getRequisitionById(db, 'missing-id');
+
+    expect(result).toBeNull();
+    expect(db.query).toHaveBeenCalledTimes(1);
+  });
+
+  test('returns mapped header with lines', async () => {
+    let call = 0;
+    const db = mockDb(() => {
+      call += 1;
+      if (call === 1) {
+        return {
+          rows: [{
+            id: 'pr-1',
+            pr_number: 'PR-2026-0001',
+            status: 'APPROVED',
+            requester_name: 'Rina',
+            department_name: 'Ops',
+            title: 'Spare parts',
+            notes: null,
+            needed_by_date: '2026-06-15',
+            created_at: '2026-05-01T10:00:00.000Z',
+            updated_at: '2026-05-01T10:00:00.000Z',
+          }],
+          rowCount: 1,
+        };
+      }
+      return {
+        rows: [{
+          id: 'l-1',
+          line_no: 1,
+          item_code: 'BRG-001',
+          item_name: 'Safety Helmet',
+          qty_requested: 10,
+          qty_allocated: 3,
+          qty_received: 0,
+          uom: 'PCS',
+          est_unit_price: 150000,
+          site_code: 'WH-JKT',
+          required_date: null,
+          budget_center: null,
+        }],
+        rowCount: 1,
+      };
+    });
+
+    const result = await getRequisitionById(db, 'pr-1');
+
+    expect(result.id).toBe('pr-1');
+    expect(result.prNumber).toBe('PR-2026-0001');
+    expect(result.status).toBe('APPROVED');
+    expect(result.lines).toHaveLength(1);
+    expect(result.lines[0].itemCode).toBe('BRG-001');
+    // qtyOpenForPo = qty_requested - qty_allocated
+    expect(result.lines[0].qtyOpenForPo).toBe(7);
+    expect(db.query).toHaveBeenCalledTimes(2);
+  });
+
+  test('returns empty lines array when PR has no lines', async () => {
+    let call = 0;
+    const db = mockDb(() => {
+      call += 1;
+      if (call === 1) {
+        return {
+          rows: [{
+            id: 'pr-2',
+            pr_number: 'PR-2026-0002',
+            status: 'DRAFT',
+            requester_name: 'Budi',
+            department_name: 'IT',
+            title: 'New laptops',
+            notes: null,
+            needed_by_date: null,
+            created_at: '2026-05-02T08:00:00.000Z',
+            updated_at: '2026-05-02T08:00:00.000Z',
+          }],
+          rowCount: 1,
+        };
+      }
+      return { rows: [], rowCount: 0 };
+    });
+
+    const result = await getRequisitionById(db, 'pr-2');
+
+    expect(result.lines).toHaveLength(0);
   });
 });

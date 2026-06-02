@@ -61,3 +61,33 @@ Reference plan: `docs/plan.md`.
 
 ## Workshop-First Principle
 When there is a trade-off between production robustness and workshop clarity, choose workshop clarity.
+
+---
+
+## Implementation Quality Checklist
+
+Use this checklist before considering any feature complete.
+
+### Code
+- [ ] Route handler is thin — business logic lives in the service layer
+- [ ] All inputs validated at the API boundary with a clear 400 error response
+- [ ] No raw SQL strings duplicated across files — queries belong in the service
+- [ ] No dead code, commented-out blocks, or unused imports left behind
+- [ ] File stays short enough to read in one screen without scrolling
+
+### Business Rules
+- [ ] PO allocation qty never exceeds PR line remaining qty (enforced in service)
+- [ ] Status transitions are explicit and reject invalid states with a clear error
+- [ ] PO can only be created from an approved PR
+
+### Testing
+- [ ] Jest unit test covers the happy path for each new service function
+- [ ] Jest unit test covers the key rejection case (e.g., over-allocation, bad status)
+- [ ] Playwright E2E test covers the primary user flow for any new page
+- [ ] Tests use realistic seed data; no magic numbers without a comment
+- [ ] All existing tests still pass after the change (`npm test` in `backend/`)
+
+### Documentation
+- [ ] `docs/plan.md` endpoint table updated if a new route was added
+- [ ] Any non-obvious business rule has a one-line comment in the service file
+- [ ] No markdown files created to document a change (use code comments instead)
