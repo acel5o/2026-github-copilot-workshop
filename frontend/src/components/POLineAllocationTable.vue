@@ -2,13 +2,12 @@
   <div class="card-panel">
     <div class="card-panel-header">
       <p class="form-section-title" style="margin: 0">Line Allocation</p>
-      <button type="button" class="btn btn-outline" @click="addLine">+ Add Line</button>
     </div>
     <table>
       <thead>
         <tr>
           <th style="width: 50px">Line</th>
-          <th>PR Line ID</th>
+          <th>PR Line</th>
           <th>Item Code</th>
           <th>Item Name</th>
           <th style="width: 100px">Alloc. QTY</th>
@@ -22,17 +21,14 @@
       <tbody>
         <tr v-if="lines.length === 0">
           <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 24px">
-            No lines added. Click "+ Add Line" to begin.
+            No lines loaded. Select an approved PR in the header above.
           </td>
         </tr>
         <tr v-for="(line, index) in lines" :key="index">
           <td>{{ index + 1 }}</td>
           <td>
-            <input
-              v-model="line.prLineId"
-              placeholder="PR line ID..."
-              required
-            />
+            <span class="muted" style="font-size: 0.75rem">{{ line.prLineId ? line.prLineId.slice(0, 8) + '…' : '-' }}</span>
+            <input type="hidden" v-model="line.prLineId" required />
           </td>
           <td>
             <input v-model="line.itemCode" placeholder="Type..." required />

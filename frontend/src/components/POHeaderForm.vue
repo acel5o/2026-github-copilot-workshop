@@ -13,12 +13,16 @@
       </div>
       <div class="form-group">
         <label>PR Reference</label>
-        <input
-          :value="modelValue.prNumber"
-          @input="emit('update:modelValue', { ...modelValue, prNumber: $event.target.value })"
-          placeholder="e.g. PR-2026-0001"
+        <select
+          :value="modelValue.prId"
+          @change="onPrChange($event.target.value)"
           required
-        />
+        >
+          <option value="">Select approved PR...</option>
+          <option v-for="pr in approvedPrs" :key="pr.id" :value="pr.id">
+            {{ pr.prNumber }}
+          </option>
+        </select>
       </div>
       <div class="form-group">
         <label>Expected Delivery Date</label>
@@ -55,12 +59,22 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Object,
     required: true,
   },
+  approvedPrs: {
+    type: Array,
+    default: () => [],
+  },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'prSelected']);
+
+function onPrChange(prId) {
+  const pr = props.approvedPrs.find((p) => p.id === prId);
+  emit('update:modelValue', { ...props.modelValue, prId, prNumber: pr?.prNumber || '' });
+  emit('prSelected', prId);
+}
 </script>

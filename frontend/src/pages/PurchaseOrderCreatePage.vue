@@ -15,7 +15,7 @@
 
     <form @submit.prevent="handleSubmit">
       <!-- PO Header -->
-      <POHeaderForm v-model="form.header" />
+      <POHeaderForm v-model="form.header" :approvedPrs="approvedPrs" @prSelected="onPrSelected" />
 
       <!-- PO Line Allocation -->
       <POLineAllocationTable
@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import POHeaderForm from '../components/POHeaderForm.vue';
 import POLineAllocationTable from '../components/POLineAllocationTable.vue';
@@ -44,10 +44,12 @@ import { api } from '../api.js';
 const router = useRouter();
 const errorMessage = ref('');
 const submitting = ref(false);
+const approvedPrs = ref([]);
 
 const form = reactive({
   header: {
     vendorName: '',
+    prId: '',
     prNumber: '',
     expectedDeliveryDate: '',
     paymentTerms: '',
@@ -55,6 +57,37 @@ const form = reactive({
   },
   lines: [],
 });
+
+onMounted(async () => {
+  try {
+    const payload = await api.listRequisitions();
+    approvedPrs.value = (payload.items || []).filter((pr) => pr.status === 'APPROVED');
+  } catch (err) {
+    errorMessage.value = err.message;
+  }
+});
+
+async function onPrSelected(prId) {
+  if (!prId) {
+    form.lines = [];
+    return;
+  }
+  try {
+    const payload = await api.getRequisitionOpenLines(prId);
+    form.lines = payload.openLines.map((line) => ({
+      prLineId: line.id,
+      itemCode: line.itemCode,
+      itemName: line.itemName,
+      qtyOrdered: line.qtyOpenForPo,
+      uom: line.uom,
+      unitPrice: line.estUnitPrice,
+      siteCode: line.siteCode,
+      requiredDate: line.requiredDate || '',
+    }));
+  } catch (err) {
+    errorMessage.value = err.message;
+  }
+}
 
 async function handleSubmit() {
   if (form.lines.length === 0) {
