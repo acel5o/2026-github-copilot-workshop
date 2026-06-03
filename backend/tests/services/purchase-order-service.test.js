@@ -521,7 +521,7 @@ describe('purchase-order-service list functions', () => {
       }),
     };
 
-    const result = await getOpenPoLines(db, 'po-1');
+    const result = await getOpenPoLines(db, 'po-2');
 
     expect(result.purchaseOrder).toEqual({
       id: 'po-1',
