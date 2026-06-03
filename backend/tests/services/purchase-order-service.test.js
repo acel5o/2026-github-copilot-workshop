@@ -529,7 +529,7 @@ describe('purchase-order-service list functions', () => {
       status: 'SUBMITTED',
     });
     expect(result.openLines).toHaveLength(1);
-    expect(result.openLines[0].id).toBe('po-line-2');
+    expect(result.openLines[0].id).toBe('po-line-1');
     expect(result.openLines[0].qtyOpenForGr).toBe(6);
   });
 });

@@ -280,6 +280,26 @@ td a {
   gap: 32px;
 }
 
+.po-summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+}
+
+.po-summary-left,
+.po-summary-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.po-summary-count {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
 .po-summary-label {
   font-size: 14px;
   font-weight: 600;
@@ -290,6 +310,15 @@ td a {
   font-size: 20px;
   font-weight: 700;
   color: var(--text);
+}
+
+.qty-badge {
+  display: inline-block;
+  background: var(--table-header);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 /* ===== Form fields (Figma style) ===== */

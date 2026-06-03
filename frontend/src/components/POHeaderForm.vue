@@ -3,7 +3,7 @@
     <p class="form-section-title">PO Header</p>
     <div class="form-row">
       <div class="form-group">
-        <label>Vendor Name</label>
+        <label>Vendor</label>
         <input
           :value="modelValue.vendorName"
           @input="emit('update:modelValue', { ...modelValue, vendorName: $event.target.value })"
@@ -12,20 +12,7 @@
         />
       </div>
       <div class="form-group">
-        <label>PR Reference</label>
-        <select
-          :value="modelValue.prId"
-          @change="onPrChange($event.target.value)"
-          required
-        >
-          <option value="">Select approved PR...</option>
-          <option v-for="pr in approvedPrs" :key="pr.id" :value="pr.id">
-            {{ pr.prNumber }}
-          </option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Expected Delivery Date</label>
+        <label>Arrival by date</label>
         <input
           :value="modelValue.expectedDeliveryDate"
           @input="emit('update:modelValue', { ...modelValue, expectedDeliveryDate: $event.target.value })"
@@ -45,9 +32,22 @@
           <option value="PREPAID">Prepaid</option>
         </select>
       </div>
+      <div class="form-group">
+        <label>PR Reference</label>
+        <select
+          :value="modelValue.prId"
+          @change="onPrChange($event.target.value)"
+          required
+        >
+          <option value="">Select approved PR...</option>
+          <option v-for="pr in approvedPrs" :key="pr.id" :value="pr.id">
+            {{ pr.prNumber }}
+          </option>
+        </select>
+      </div>
     </div>
     <div class="form-group full">
-      <label>Notes</label>
+      <label>Note</label>
       <textarea
         :value="modelValue.notes"
         @input="emit('update:modelValue', { ...modelValue, notes: $event.target.value })"

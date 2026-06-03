@@ -6,7 +6,7 @@
         <RouterLink to="/purchase-orders" class="back-btn" title="Back to list">&#8592;</RouterLink>
         <div>
           <h2>Create Purchase Order</h2>
-          <p class="muted">Allocate approved PR lines to a new purchase order</p>
+          <p class="muted">Pick approved PR lines and allocate order quantities</p>
         </div>
       </div>
     </div>
@@ -24,8 +24,12 @@
       />
 
       <!-- PO Summary -->
-      <div class="card-panel po-summary" v-if="form.lines.length > 0">
-        <div class="po-summary-row">
+      <div class="card-panel po-summary-bar">
+        <div class="po-summary-left">
+          <span class="po-summary-label">Total Lines</span>
+          <span class="po-summary-count">{{ form.lines.length }}</span>
+        </div>
+        <div class="po-summary-right">
           <span class="po-summary-label">Grand Total</span>
           <span class="po-summary-value">{{ grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
         </div>

@@ -1,21 +1,22 @@
 <template>
   <div class="card-panel">
     <div class="card-panel-header">
-      <p class="form-section-title" style="margin: 0">Line Allocation</p>
+      <p class="form-section-title" style="margin: 0">Approved PR Lines</p>
+      <button type="button" class="btn btn-outline" @click="addLine">+ Add Line</button>
     </div>
     <table>
       <thead>
         <tr>
-          <th style="width: 50px">Line</th>
-          <th>PR Line</th>
+          <th style="width: 40px; text-align: center">#</th>
           <th>Item Code</th>
           <th>Item Name</th>
-          <th style="width: 100px">Alloc. QTY</th>
           <th style="width: 80px">UOM</th>
-          <th>Unit Price</th>
+          <th style="width: 110px">Req. QTY</th>
+          <th style="width: 110px">Order QTY</th>
+          <th style="width: 120px">Unit Price</th>
           <th>Site</th>
-          <th>Required Date</th>
-          <th style="width: 60px">Action</th>
+          <th style="width: 140px">Required Date</th>
+          <th style="width: 50px"></th>
         </tr>
       </thead>
       <tbody>
@@ -25,16 +26,18 @@
           </td>
         </tr>
         <tr v-for="(line, index) in lines" :key="index">
-          <td>{{ index + 1 }}</td>
-          <td>
-            <span class="muted" style="font-size: 0.75rem">{{ line.prLineId ? line.prLineId.slice(0, 8) + '…' : '-' }}</span>
-            <input type="hidden" v-model="line.prLineId" required />
-          </td>
+          <td style="text-align: center; color: var(--text-muted); font-size: 12px">{{ index + 1 }}</td>
           <td>
             <input v-model="line.itemCode" placeholder="Type..." required />
           </td>
           <td>
             <input v-model="line.itemName" placeholder="Type..." required />
+          </td>
+          <td>
+            <input v-model="line.uom" placeholder="PCS" required />
+          </td>
+          <td>
+            <span class="qty-badge">{{ line.qtyRequested ?? line.qtyOrdered }}</span>
           </td>
           <td>
             <input
@@ -45,9 +48,6 @@
               placeholder="0"
               required
             />
-          </td>
-          <td>
-            <input v-model="line.uom" placeholder="PCS" required />
           </td>
           <td>
             <input
@@ -79,13 +79,6 @@
           </td>
         </tr>
       </tbody>
-      <tfoot v-if="lines.length > 0">
-        <tr>
-          <td colspan="6" style="text-align: right; font-weight: 600; padding: 8px 12px">Total</td>
-          <td style="font-weight: 600; padding: 8px 12px">{{ totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</td>
-          <td colspan="3"></td>
-        </tr>
-      </tfoot>
     </table>
   </div>
 </template>
