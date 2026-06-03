@@ -23,6 +23,14 @@
         @update:lines="form.lines = $event"
       />
 
+      <!-- PO Summary -->
+      <div class="card-panel po-summary" v-if="form.lines.length > 0">
+        <div class="po-summary-row">
+          <span class="po-summary-label">Grand Total</span>
+          <span class="po-summary-value">{{ grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
+        </div>
+      </div>
+
       <!-- Action buttons -->
       <div class="btn-group">
         <RouterLink to="/purchase-orders" class="btn btn-outline">Cancel</RouterLink>
@@ -35,7 +43,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import POHeaderForm from '../components/POHeaderForm.vue';
 import POLineAllocationTable from '../components/POLineAllocationTable.vue';
@@ -45,6 +53,10 @@ const router = useRouter();
 const errorMessage = ref('');
 const submitting = ref(false);
 const approvedPrs = ref([]);
+
+const grandTotal = computed(() =>
+  form.lines.reduce((sum, l) => sum + (l.qtyOrdered || 0) * (l.unitPrice || 0), 0)
+);
 
 const form = reactive({
   header: {

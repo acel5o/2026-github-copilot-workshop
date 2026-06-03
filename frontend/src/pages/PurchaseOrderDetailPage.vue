@@ -79,10 +79,17 @@
             <td>{{ Number(line.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</td>
             <td>{{ (line.qtyOrdered * line.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</td>
             <td>{{ line.siteCode }}</td>
-            <td>{{ line.requiredDate || '-' }}</td>
+            <td>{{ line.requiredDate ? line.requiredDate.slice(0, 10) : '-' }}</td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="card-panel po-summary" v-if="po && po.lines && po.lines.length > 0">
+      <div class="po-summary-row">
+        <span class="po-summary-label">Grand Total</span>
+        <span class="po-summary-value">{{ po.lines.reduce((s, l) => s + l.qtyOrdered * l.unitPrice, 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) }}</span>
+      </div>
     </div>
   </section>
 </template>

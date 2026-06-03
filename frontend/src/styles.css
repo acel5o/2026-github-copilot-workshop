@@ -267,6 +267,31 @@ td a {
   justify-content: flex-end;
 }
 
+/* ===== PO Summary panel ===== */
+.po-summary {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+}
+
+.po-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.po-summary-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.po-summary-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
 /* ===== Form fields (Figma style) ===== */
 .form-section-title {
   font-size: 14px;
